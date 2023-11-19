@@ -1,8 +1,8 @@
 package ru.netology.servlet;
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import ru.netology.config.JavaConfig;
 import ru.netology.controller.PostController;
-import ru.netology.repository.PostRepository;
-import ru.netology.service.PostService;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,14 +18,14 @@ public class MainServlet extends HttpServlet {
     private final String REGEX_FOR_GET_AND_REMOVE_POST = "/api/posts/\\d+";
     private final String SLASH = "/";
     private PostController controller;
-    private PostRepository repository;
-    private PostService service;
 
     @Override
     public void init() {
-        repository = new PostRepository();
-        service = new PostService(repository);
-        controller = new PostController(service);
+        // Specify package list for classes with annotations
+        final var context = new AnnotationConfigApplicationContext(JavaConfig.class);
+
+        // Get controller by bean's class
+        controller = context.getBean(PostController.class);
     }
 
     private long getId(String path) {
